@@ -465,6 +465,79 @@
         {% endfor %}
       </tr>
     {% endmacro %}
+
+    {# Editgrid label function
+     # Only print editgrid label if its components have data #}
+    {% macro editgridLabel(editgrid, data) %}
+      {% set hasData = false %}
+      {% for row in data[editgrid.key] %}
+        {% set i = loop.index0 %}
+        {% for component in editgrid.components %}
+          {% if data[editgrid.key][i][component.key] %}
+            {% set hasData = true %}
+          {% endif %}
+        {% endfor %}
+      {% endfor %}
+      {% if hasData %}
+        <p><span class="label">{{ editgrid.label | striptags }}</span>:</p>
+      {% endif %}
+    {% endmacro %}
+    {# editgrid data function
+     # Print editgrid responses as a table #}
+    {% macro editgridData(component, data) %}
+      <table class="table-editgrid">
+        <thead>
+          <tr>
+            {% for field in component.components %}
+              {% if field.type !== 'htmlelement' %}
+                <th>{{ field.label }}</th>
+              {% endif %}
+            {% endfor %}
+          </tr>
+        </thead>
+        <tbody>
+          {% if component.enableRowGroups %}
+            {# Make sure group header rows span correct number of columns #}
+            {% set numberOfColumns = 0 %}
+            {% for field in component.components %}
+              {% if field.type !== 'htmlelement' %}
+                {% set numberOfColumns = numberOfColumns + 1 %}
+              {% endif %}
+            {% endfor %}
+            {# Include group header rows before grouped data rows #}
+            {% set groupStartRow = 0 %}
+            {% for group in component.rowGroups %}
+              <tr class="table-editgrid__group">
+                <td colspan="{{ numberOfColumns }}">{{ group.label }}</td>
+              </tr>
+              {% for row in range(groupStartRow, groupStartRow + group.numberOfRows) %}
+                {{ editgridRow(component, data, row) }}
+              {% endfor %}
+              {% set groupStartRow = groupStartRow + group.numberOfRows %}
+            {% endfor %}
+          {% else %}
+            {% for row in data[component.key] %}
+              {% set i = loop.index0 %}
+              {{ editgridRow(component, data, i) }}
+            {% endfor %}
+          {% endif %}
+          <tr class="table-editgrid__spacer">
+            <td colspan="{{ numberOfColumns }}">&nbsp;</td>
+          </tr>
+        </tbody>
+      </table>
+    {% endmacro %}
+    {# editgrid row function
+     # Print each row of editgrid responses #}
+    {% macro editgridRow(component, data, index) %}
+      <tr>
+        {% for field in component.components %}
+          {% if field.type !== 'htmlelement' %}
+            <td {% if field.customClass %} class="{{ field.customClass }}" {% endif %}>{{ data[component.key][index][field.key] }}</td>
+          {% endif %}
+        {% endfor %}
+      </tr>
+    {% endmacro %}	  
     {# Datetime function
      # Print the datetime value in the appropriate format #}
     {% macro datetimeValue(component, data) %}
@@ -502,6 +575,9 @@
           {% elif (component.type === 'datagrid') %}
             {{ datagridLabel(component, data) }}
             {{ datagridData(component, data) }}
+          {% elif (component.type === 'editgrid') %}
+            {{ editgridLabel(component, data) }}
+            {{ editgridData(component, data) }}
           {% else %}
             {% set valueOutput = '' %}
             {% if component.type === 'select' %}
