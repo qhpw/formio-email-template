@@ -485,7 +485,6 @@
          {% endfor %}
        </tr>
      {% endmacro %}
-
     {# Editgrid label function
      # Only print editgrid label if its components have data #}
     {% macro editgridLabel(editgrid, data) %}
@@ -627,8 +626,7 @@
       {% endfor %}
     {% endmacro %}
     {# END MACROS #}
-    {{ printSubmission(form.components, data) | trim }}
-	<!-- <table role="presentation" border="0" cellpadding="0" cellspacing="0" class="body">
+	<table role="presentation" border="0" cellpadding="0" cellspacing="0" class="body">
       <tr>
         <td>&nbsp;</td>
         <td class="container">
@@ -641,10 +639,10 @@
                       <td>
                         <h1>{{ form.title }}</h1>
                         <div id="message">{{ content }}</div>
-                        <div id="submission">
+                        <!-- <div id="submission">
                           <h2>Submitted form</h2>
                           <div id="submission-data">{{ printSubmission(form.components, data) | trim }}</div>
-                        </div>
+                        </div> -->
                       </td>
                     </tr>
                   </table>
@@ -675,7 +673,7 @@
         </td>
         <td>&nbsp;</td>
       </tr>
-    </table> -->
+    </table>
     <!-- Debugging data
       {
         "id": "{{ id }}",
