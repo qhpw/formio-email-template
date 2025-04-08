@@ -456,35 +456,37 @@
     {% endmacro %}
     {# Datagrid row function
      # Print each row of datagrid responses #}
-     {# Datagrid row function
-      # Print each row of datagrid responses #}
-     {% macro datagridRow(component, data, index) %}
-       <tr>
-         {% for field in component.components %}
-           {% if field.type !== 'htmlelement' %}
-             {% set cellValue = data[component.key][index][field.key] %}
-             <td {% if field.customClass %} class="{{ field.customClass }}" {% endif %}>
-                 {% if field.type == 'file' and cellValue %}
-                     {# File component handling #}
-                     {% if cellValue is iterable and cellValue|length > 0 %}
-                         {# Handle multiple file uploads #}
-                          {% for file in cellValue %}
-                            {{ file.originalName }}{% if not loop.last %}, {% endif %}
-                         {% endfor %}
-                     {% elif cellValue.originalName is defined %}
-                         {# Handle single file upload #}
-                         {{ cellValue.originalName }}
-                     {% else %}
-                         {{ cellValue }}
-                     {% endif %}
-                 {% else %}
-                   {{ cellValue }}
-                 {% endif %}
-             </td>
-           {% endif %}
-         {% endfor %}
-       </tr>
-     {% endmacro %}
+    {# Datagrid row function
+     # Print each row of datagrid responses #}
+    {% macro datagridRow(component, data, index) %}
+      <tr>
+        {% for field in component.components %}
+          {% if field.type !== 'htmlelement' %}
+            {% set cellValue = data[component.key][index][field.key] %}
+            <td {% if field.customClass %} class="{{ field.customClass }}" {% endif %}>
+                {% if field.type == 'file' and cellValue %}
+                    {# Debugging output #}
+                    {{ cellValue | dump }}
+                    {# File component handling #}
+                    {% if cellValue is iterable and cellValue|length > 0 %}
+                        {# Handle multiple file uploads #}
+                         {% for file in cellValue %}
+                           {{ file.originalName }}{% if not loop.last %}, {% endif %}
+                        {% endfor %}
+                    {% elif cellValue.originalName is defined %}
+                        {# Handle single file upload #}
+                        {{ cellValue.originalName }}
+                    {% else %}
+                        {{ cellValue }}
+                    {% endif %}
+                {% else %}
+                  {{ cellValue }}
+                {% endif %}
+            </td>
+          {% endif %}
+        {% endfor %}
+      </tr>
+    {% endmacro %}
 
     {# Editgrid label function
      # Only print editgrid label if its components have data #}
