@@ -456,37 +456,35 @@
     {% endmacro %}
     {# Datagrid row function
      # Print each row of datagrid responses #}
-    {# Datagrid row function
-     # Print each row of datagrid responses #}
-    {% macro datagridRow(component, data, index) %}
-      <tr>
-        {% for field in component.components %}
-          {% if field.type !== 'htmlelement' %}
-            {% set cellValue = data[component.key][index][field.key] %}
-            <td {% if field.customClass %} class="{{ field.customClass }}" {% endif %}>
-                {% if field.type == 'file' and cellValue %}
-                    {# Debugging output #}
-                    {{ cellValue | dump }}
-                    {# File component handling #}
-                    {% if cellValue is iterable and cellValue|length > 0 %}
-                        {# Handle multiple file uploads #}
-                         {% for file in cellValue %}
-                           {{ file.originalName }}{% if not loop.last %}, {% endif %}
-                        {% endfor %}
-                    {% elif cellValue.originalName is defined %}
-                        {# Handle single file upload #}
-                        {{ cellValue.originalName }}
-                    {% else %}
-                        {{ cellValue }}
-                    {% endif %}
-                {% else %}
-                  {{ cellValue }}
-                {% endif %}
-            </td>
-          {% endif %}
-        {% endfor %}
-      </tr>
-    {% endmacro %}
+     {# Datagrid row function
+      # Print each row of datagrid responses #}
+     {% macro datagridRow(component, data, index) %}
+       <tr>
+         {% for field in component.components %}
+           {% if field.type !== 'htmlelement' %}
+             {% set cellValue = data[component.key][index][field.key] %}
+             <td {% if field.customClass %} class="{{ field.customClass }}" {% endif %}>
+                 {% if field.type == 'file' and cellValue %}
+                     {# File component handling #}
+                     {% if cellValue is iterable and cellValue|length > 0 %}
+                         {# Handle multiple file uploads #}
+                          {% for file in cellValue %}
+                            {{ file.originalName }}{% if not loop.last %}, {% endif %}
+                         {% endfor %}
+                     {% elif cellValue.originalName is defined %}
+                         {# Handle single file upload #}
+                         {{ cellValue.originalName }}
+                     {% else %}
+                         {{ cellValue }}
+                     {% endif %}
+                 {% else %}
+                   {{ cellValue }}
+                 {% endif %}
+             </td>
+           {% endif %}
+         {% endfor %}
+       </tr>
+     {% endmacro %}
 
     {# Editgrid label function
      # Only print editgrid label if its components have data #}
@@ -582,52 +580,69 @@
     {% endmacro %}
     {# Print submission function
      # Process submitted form fields and print fields with data #}
-    {% macro printSubmission(components, data) %}
-      {% for component in components %}
-        {% if (component.type === 'button') or (component.type === 'hidden') or (component.type === 'container') or (component.type === 'datasource') or (component.type !== 'fieldset' and component.type !== 'panel' and component.type !== 'columns' and not data[component.key]) or (component.customClass and 'no-email' in (component.customClass)) %}
-          {# do nothing #}
-        {% else %}
-          {% if component.type === 'fieldset' or component.type === 'panel' %}
-            {{ fieldsetLabel(component, data) }}
-            {{ printSubmission(component.components, data) }}
-          {% elif (component.type === 'columns') %}
-            {% for column in component.columns %}
-              {{ printSubmission(column.components, data) }}
-            {% endfor %}
-          {% elif (component.type === 'datagrid') %}
-            {{ datagridLabel(component, data) }}
-            {{ datagridData(component, data) }}
-          {% elif (component.type === 'editgrid') %}
-            {{ editgridLabel(component, data) }}
-            {{ editgridData(component, data) }}
-          {% else %}
-            {% set valueOutput = '' %}
-            {% if component.type === 'select' %}
-              {% set valueOutput %}
-              {{ selectedValueLabel(component, data) }}
-              {% endset %}
-            {% elif component.type === 'radio' %}
-              {% set valueOutput %}
-              {{ radioValueLabel(component, data) }}
-              {% endset %}
-            {% elif component.type === 'selectboxes' %}
-              {% set valueOutput %}
-              {{ boxesValueLabel(component, data) }}
-              {% endset %}
-            {% elif component.type === 'datetime' %}
-              {% set valueOutput %}
-              {{ datetimeValue(component, data) }}
-              {% endset %}
-            {% else %}
-              {% set valueOutput %}
-              {{ data[component.key] }}
-              {% endset %}
-            {% endif %}
-            <p><span class="label">{{ component.label | striptags }}: </span>{{ valueOutput | trim }}</p>
-          {% endif %}
-        {% endif %}
-      {% endfor %}
-    {% endmacro %}
+     {% macro printSubmission(components, data) %}
+     {% for component in components %}
+       {% if (component.type === 'button') or (component.type === 'hidden') or (component.type === 'container') or (component.type === 'datasource') or (component.type !== 'fieldset' and component.type !== 'panel' and component.type !== 'columns' and not data[component.key]) or (component.customClass and 'no-email' in (component.customClass)) %}
+         {# do nothing #}
+       {% else %}
+         {% if component.type === 'fieldset' or component.type === 'panel' %}
+           {{ fieldsetLabel(component, data) }}
+           {{ printSubmission(component.components, data) }}
+         {% elif (component.type === 'columns') %}
+           {% for column in component.columns %}
+             {{ printSubmission(column.components, data) }}
+           {% endfor %}
+         {% elif (component.type === 'datagrid') %}
+           {{ datagridLabel(component, data) }}
+           {{ datagridData(component, data) }}
+         {% elif (component.type === 'editgrid') %}
+           {{ editgridLabel(component, data) }}
+           {{ editgridData(component, data) }}
+         {% else %}
+           {% set valueOutput = '' %}
+           {% if component.type === 'select' %}
+             {% set valueOutput %}
+             {{ selectedValueLabel(component, data) }}
+             {% endset %}
+           {% elif component.type === 'radio' %}
+             {% set valueOutput %}
+             {{ radioValueLabel(component, data) }}
+             {% endset %}
+           {% elif component.type === 'selectboxes' %}
+             {% set valueOutput %}
+             {{ boxesValueLabel(component, data) }}
+             {% endset %}
+           {% elif component.type === 'datetime' %}
+             {% set valueOutput %}
+             {{ datetimeValue(component, data) }}
+             {% endset %}
+           {% elif component.type === 'file' %}
+             {% set valueOutput %}
+             {# Debugging output #}
+             {{ data[component.key] | dump }}
+             {# File component handling #}
+             {% if data[component.key] is iterable and data[component.key]|length > 0 %}
+               {# Handle multiple file uploads #}
+               {% for file in data[component.key] %}
+                 {{ file.originalName }}{% if not loop.last %}, {% endif %}
+               {% endfor %}
+             {% elif data[component.key].originalName is defined %}
+               {# Handle single file upload #}
+               {{ data[component.key].originalName }}
+             {% else %}
+               {{ data[component.key] }}
+             {% endif %}
+             {% endset %}
+           {% else %}
+             {% set valueOutput %}
+             {{ data[component.key] }}
+             {% endset %}
+           {% endif %}
+           <p><span class="label">{{ component.label | striptags }}: </span>{{ valueOutput | trim }}</p>
+         {% endif %}
+       {% endif %}
+     {% endfor %}
+   {% endmacro %}
     {# END MACROS #}
 	<table role="presentation" border="0" cellpadding="0" cellspacing="0" class="body">
       <tr>
