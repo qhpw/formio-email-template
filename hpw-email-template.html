@@ -578,6 +578,22 @@
       {% set regex = r/([dy])/ %}
       {% for c in initialFormat %}{{ c if not regex.test(c) else c | upper }}{% endfor %}
     {% endmacro %}
+    {# extracts and displays the uploaded file name out of file object #}
+    {% macro fileValueLabel(data) %}
+      {% set valueOutput = '' %}
+      {% if data is iterable and data|length > 0 %}
+        {# Handle multiple file uploads #}
+        {% for file in data %}
+          {{ file.originalName }}{% if not loop.last %}, {% endif %}
+        {% endfor %}
+      {% elif data.originalName is defined %}
+        {# Handle single file upload #}
+        {{ data.originalName }}
+      {% else %}
+        {{ data }}
+      {% endif %}
+      {{ valueOutput }}
+    {% endmacro %}
     {# Print submission function
      # Process submitted form fields and print fields with data #}
     {% macro printSubmission(components, data) %}
@@ -615,6 +631,10 @@
             {% elif component.type === 'datetime' %}
               {% set valueOutput %}
               {{ datetimeValue(component, data) }}
+              {% endset %}
+            {% elif component.type === 'file' %}
+              {% set valueOutput %}
+              {{ fileValueLabel(data[component.key]) }}
               {% endset %}
             {% else %}
               {% set valueOutput %}
