@@ -581,68 +581,65 @@
     {# Print submission function
      # Process submitted form fields and print fields with data #}
      {% macro printSubmission(components, data) %}
-     {% for component in components %}
-       {% if (component.type === 'button') or (component.type === 'hidden') or (component.type === 'container') or (component.type === 'datasource') or (component.type !== 'fieldset' and component.type !== 'panel' and component.type !== 'columns' and not data[component.key]) or (component.customClass and 'no-email' in (component.customClass)) %}
-         {# do nothing #}
-       {% else %}
-         {% if component.type === 'fieldset' or component.type === 'panel' %}
-           {{ fieldsetLabel(component, data) }}
-           {{ printSubmission(component.components, data) }}
-         {% elif (component.type === 'columns') %}
-           {% for column in component.columns %}
-             {{ printSubmission(column.components, data) }}
-           {% endfor %}
-         {% elif (component.type === 'datagrid') %}
-           {{ datagridLabel(component, data) }}
-           {{ datagridData(component, data) }}
-         {% elif (component.type === 'editgrid') %}
-           {{ editgridLabel(component, data) }}
-           {{ editgridData(component, data) }}
-         {% else %}
-           {% set valueOutput = '' %}
-           {% if component.type === 'select' %}
-             {% set valueOutput %}
-             {{ selectedValueLabel(component, data) }}
-             {% endset %}
-           {% elif component.type === 'radio' %}
-             {% set valueOutput %}
-             {{ radioValueLabel(component, data) }}
-             {% endset %}
-           {% elif component.type === 'selectboxes' %}
-             {% set valueOutput %}
-             {{ boxesValueLabel(component, data) }}
-             {% endset %}
-           {% elif component.type === 'datetime' %}
-             {% set valueOutput %}
-             {{ datetimeValue(component, data) }}
-             {% endset %}
-           {% elif component.type === 'file' %}
-             {% set valueOutput %}
-             {# Debugging output #}
-             {{ data[component.key] | dump }}
-             {# File component handling #}
-             {% if data[component.key] is iterable and data[component.key]|length > 0 %}
-               {# Handle multiple file uploads #}
-               {% for file in data[component.key] %}
-                 {{ file.originalName }}{% if not loop.last %}, {% endif %}
-               {% endfor %}
-             {% elif data[component.key].originalName is defined %}
-               {# Handle single file upload #}
-               {{ data[component.key].originalName }}
-             {% else %}
-               {{ data[component.key] }}
-             {% endif %}
-             {% endset %}
-           {% else %}
-             {% set valueOutput %}
-             {{ data[component.key] }}
-             {% endset %}
-           {% endif %}
-           <p><span class="label">{{ component.label | striptags }}: </span>{{ valueOutput | trim }}</p>
-         {% endif %}
-       {% endif %}
-     {% endfor %}
-   {% endmacro %}
+      {% for component in components %}
+        {% if (component.type === 'button') or (component.type === 'hidden') or (component.type === 'container') or (component.type === 'datasource') or (component.type !== 'fieldset' and component.type !== 'panel' and component.type !== 'columns' and not data[component.key]) or (component.customClass and 'no-email' in (component.customClass)) %}
+          {# do nothing #}
+        {% else %}
+          {% if component.type === 'fieldset' or component.type === 'panel' %}
+            {{ fieldsetLabel(component, data) }}
+            {{ printSubmission(component.components, data) }}
+          {% elif (component.type === 'columns') %}
+            {% for column in component.columns %}
+              {{ printSubmission(column.components, data) }}
+            {% endfor %}
+          {% elif (component.type === 'datagrid') %}
+            {{ datagridLabel(component, data) }}
+            {{ datagridData(component, data) }}
+          {% elif (component.type === 'editgrid') %}
+            {{ editgridLabel(component, data) }}
+            {{ editgridData(component, data) }}
+          {% else %}
+            {% set valueOutput = '' %}
+            {% if component.type === 'select' %}
+              {% set valueOutput %}
+              {{ selectedValueLabel(component, data) }}
+              {% endset %}
+            {% elif component.type === 'radio' %}
+              {% set valueOutput %}
+              {{ radioValueLabel(component, data) }}
+              {% endset %}
+            {% elif component.type === 'selectboxes' %}
+              {% set valueOutput %}
+              {{ boxesValueLabel(component, data) }}
+              {% endset %}
+            {% elif component.type === 'datetime' %}
+              {% set valueOutput %}
+              {{ datetimeValue(component, data) }}
+              {% endset %}
+            {% elif component.type === 'file' %}
+              {% set valueOutput %}
+              {% if data[component.key] is iterable and data[component.key]|length > 0 %}
+                {# Handle multiple file uploads #}
+                {% for file in data[component.key] %}
+                  {{ file.originalName }}{% if not loop.last %}, {% endif %}
+                {% endfor %}
+              {% elif data[component.key].originalName is defined %}
+                {# Handle single file upload #}
+                {{ data[component.key].originalName }}
+              {% else %}
+                {{ data[component.key] }}
+              {% endif %}
+              {% endset %}
+            {% else %}
+              {% set valueOutput %}
+              {{ data[component.key] }}
+              {% endset %}
+            {% endif %}
+            <p><span class="label">{{ component.label | striptags }}: </span>{{ valueOutput | trim }}</p>
+          {% endif %}
+        {% endif %}
+      {% endfor %}
+    {% endmacro %}
     {# END MACROS #}
 	<table role="presentation" border="0" cellpadding="0" cellspacing="0" class="body">
       <tr>
