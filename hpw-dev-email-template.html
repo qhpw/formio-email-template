@@ -558,26 +558,18 @@
         {% endfor %}
       </tr>
     {% endmacro %}
-
-    {# Datetime function
-     # Print the datetime value in the appropriate format #}     
-    {% macro datetimeValue(component, data) %}
-      <p>Raw value: {{ data[component.key] }}</p>
-
-      {% set rawValue = '2025-08-19T14:00:00.000Z' %}
-      {% set dateOnly = rawValue | slice(0, 10) %}
-      <p>Date: {{ dateOnly }}</p>
-
-      {% set rawValue = data[component.key] %}
-      {% if rawValue %}
-        {# Extract date portion only (YYYY-MM-DD) #}
-        {% set dateOnly = rawValue | slice(0, 10) %}
-        <span>{{ dateOnly }}</span>
-      {% else %}
-        <span>[No date provided]</span>
-      {% endif %}
+    {# Datetime function # Print the datetime value in the appropriate format #} 
+    {% macro datetimeValue(component, data) %} 
+      {# Form.io always saves datetime values as UTC, so we need to offset +10hrs (QLD time) #} 
+      {% set value = data[component.key] | date("add",10,"hours") %} 
+        {% if component.format %} 
+        {% set format = convertDateFormat(component.format) %} 
+        {{ value | date(format) }} {% elif not component.enableTime %} 
+        {{ value | date('D MMMM YYYY') }} 
+        {% else %} 
+        {{ value | date('D MMMM YYYY hh:mmA') }} 
+        {% endif %}
     {% endmacro %}
-
     {# Convert date format function
      # Changes date format from dateparser to moment.js syntax (uppercase 'D' and 'Y' characters) #}
     {% macro convertDateFormat(initialFormat) %}
