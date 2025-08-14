@@ -557,19 +557,20 @@
           {% endif %}
         {% endfor %}
       </tr>
-    {% endmacro %}
-    {# Datetime function 
-     # Print the datetime value in the appropriate format #} 
-    {% macro datetimeValue(component, data) %} 
-      {# Form.io always saves datetime values as UTC, so we need to offset +10hrs (QLD time) #} 
-      {% set value = data[component.key] | date("add",10,"hours") %} 
-        {% if component.format %} 
-        {% set format = convertDateFormat(component.format) %} 
-        {{ value | date(format) }} {% elif not component.enableTime %} 
-        {{ value | date('D MMMM YYYY') }} 
-        {% else %} 
-        {{ value | date('D MMMM YYYY hh:mmA') }} 
-        {% endif %}
+    {% endmacro %}	  
+    {# Datetime function
+     # Print the datetime value in the appropriate format #}
+    {% macro datetimeValue(component, data) %}
+      {# Form.io always saves datetime values as UTC, so we need to offset +10hrs (QLD time) #}
+      {% set value = data[component.key] | date("add",10,"hours") %}
+      {% if component.format %}
+        {% set format = convertDateFormat(component.format) %}
+        {{ value | date(format) }}
+      {% elif not component.enableTime %}
+        {{ value | date('D MMMM YYYY') }}
+      {% else %}
+        {{ value | date('D MMMM YYYY hh:mmA') }}
+      {% endif %}
     {% endmacro %}
     {# Convert date format function
      # Changes date format from dateparser to moment.js syntax (uppercase 'D' and 'Y' characters) #}
