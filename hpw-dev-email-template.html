@@ -562,7 +562,8 @@
     {# Datetime function
      # Print the datetime value in the appropriate format #}     
     {% macro datetimeValue(component, data) %}
-    <p><strong>Raw Date:</strong> {{ data[component.key] }}</p>
+      {{ data['constructionCompletionDate'] }}
+      <p><strong>Raw Date:</strong> {{ data['constructionCompletionDate'] }}</p>
       {% set rawValue = data[component.key] %}
       {% if rawValue %}
         {# Parse the raw value as a date object #}
@@ -697,7 +698,7 @@
         <td>&nbsp;</td>
       </tr>
     </table>
-    <!-- Debugging data
+    Debugging data
       {
         "id": "{{ id }}",
         "form": {{ form | dump(2) }},
@@ -705,6 +706,6 @@
         "components": {{ components | dump(2) }},
         "content": {{ content }}
       }
-    -->
+   
   </body>
 </html>
