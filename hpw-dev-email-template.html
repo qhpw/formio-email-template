@@ -558,7 +558,7 @@
         {% endfor %}
       </tr>
     {% endmacro %}
-    
+
     {# Datetime function
      # Print the datetime value in the appropriate format #}     
     {% macro datetimeValue(component, data) %}
@@ -578,6 +578,7 @@
         <span class="label">Invalid date</span>
       {% endif %}
     {% endmacro %}
+    <p><strong>Raw Date:</strong> {{ data[component.key] }}</p>
 
     {# Convert date format function
      # Changes date format from dateparser to moment.js syntax (uppercase 'D' and 'Y' characters) #}
