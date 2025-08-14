@@ -562,6 +562,7 @@
     {# Datetime function
      # Print the datetime value in the appropriate format #}     
     {% macro datetimeValue(component, data) %}
+    <p>Raw value: {{ data[component.key] }}</p>
       {% set rawValue = data[component.key] %}
       {% if rawValue %}
         {# Extract date portion only (YYYY-MM-DD) #}
