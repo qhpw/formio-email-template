@@ -564,20 +564,13 @@
     {% macro datetimeValue(component, data) %}
       {% set rawValue = data[component.key] %}
       {% if rawValue %}
-        {# Convert to AEST by adding 10 hours #}
-        {% set localDate = rawValue | date("add", 10, "hours") %}
-        
-        {# Format the date using component.format or default #}
-        {% if component.format %}
-          {% set format = convertDateFormat(component.format) %}
-          {{ localDate | date(format) }}
-        {% else %}
-          {{ localDate | date('DD MMMM YYYY, h:mm A') }}
-        {% endif %}
+        {# Extract date portion only (YYYY-MM-DD) #}
+        {% set dateOnly = rawValue | slice(0, 10) %}
+        <span>{{ dateOnly }}</span>
       {% else %}
-        <p><strong>Raw Date:</strong> [No value found for key {{ component.key }}]</p>
+        <span>[No date provided]</span>
       {% endif %}
-    {% endmacro %}    
+    {% endmacro %}
 
     {# Convert date format function
      # Changes date format from dateparser to moment.js syntax (uppercase 'D' and 'Y' characters) #}
