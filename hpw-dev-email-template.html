@@ -576,9 +576,9 @@
         {% endif %}
       {% else %}
         <span class="label">Invalid date</span>
+        <p><strong>Raw Date:</strong> {{ data[component.key] }}</p>
       {% endif %}
-    {% endmacro %}
-    <p><strong>Raw Date:</strong> {{ data[component.key] }}</p>
+    {% endmacro %}    
 
     {# Convert date format function
      # Changes date format from dateparser to moment.js syntax (uppercase 'D' and 'Y' characters) #}
