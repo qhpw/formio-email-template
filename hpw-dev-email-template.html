@@ -562,7 +562,12 @@
     {# Datetime function
      # Print the datetime value in the appropriate format #}     
     {% macro datetimeValue(component, data) %}
-    <p>Raw value: {{ data[component.key] }}</p>
+      <p>Raw value: {{ data[component.key] }}</p>
+
+      {% set rawValue = '2025-08-19T14:00:00.000Z' %}
+      {% set dateOnly = rawValue | slice(0, 10) %}
+      <p>Date: {{ dateOnly }}</p>
+
       {% set rawValue = data[component.key] %}
       {% if rawValue %}
         {# Extract date portion only (YYYY-MM-DD) #}
