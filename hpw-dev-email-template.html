@@ -562,6 +562,7 @@
     {# Datetime function
      # Print the datetime value in the appropriate format #}     
     {% macro datetimeValue(component, data) %}
+    <p><strong>Raw Date:</strong> {{ data[component.key] }}</p>
       {% set rawValue = data[component.key] %}
       {% if rawValue %}
         {# Parse the raw value as a date object #}
@@ -576,7 +577,6 @@
         {% endif %}
       {% else %}
         <span class="label">Invalid dateeee</span>
-        <p><strong>Raw Date:</strong> {{ data[component.key] }}</p>
       {% endif %}
     {% endmacro %}    
 
