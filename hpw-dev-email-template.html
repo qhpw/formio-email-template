@@ -635,9 +635,20 @@
               {{ boxesValueLabel(component, data) }}
               {% endset %}
             {% elif component.type === 'datetime' %}
-              {% set valueOutput %}
-              {{ datetimeValue(component, data) }}
-              {% endset %}
+              {% if component.format %}
+                {% set format = convertDateFormat(component.format) %}
+                {% set valueOutput %}
+                {{ data[component.key] | date(format) }}
+                {% endset %}
+              {% elif not component.enableTime %}
+                {% set valueOutput %}
+                {{ data[component.key] | date('D MMMM YYYY') }}
+                {% endset %}
+              {% else %}
+                {% set valueOutput %}
+                {{ data[component.key] | date('D MMMM YYYY hh:mmA') }}
+                {% endset %}
+              {% endif %}
             {% elif component.type === 'file' %}
               {% set valueOutput %}
               {{ fileValueLabel(data[component.key]) }}
