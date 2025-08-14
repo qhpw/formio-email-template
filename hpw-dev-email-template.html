@@ -562,22 +562,20 @@
     {# Datetime function
      # Print the datetime value in the appropriate format #}     
     {% macro datetimeValue(component, data) %}
-      {{ data['constructionCompletionDate'] }}
-      <p><strong>Raw Date:</strong> {{ data['constructionCompletionDate'] }}</p>
       {% set rawValue = data[component.key] %}
       {% if rawValue %}
-        {# Parse the raw value as a date object #}
-        {% set value = rawValue | date("add",10,"hours") %}
+        {# Convert to AEST by adding 10 hours #}
+        {% set localDate = rawValue | date("add", 10, "hours") %}
+        
+        {# Format the date using component.format or default #}
         {% if component.format %}
           {% set format = convertDateFormat(component.format) %}
-          {{ value | date(format) }}
-        {% elif not component.enableTime %}
-          {{ value | date('DD MMMM YYYY') }}
+          {{ localDate | date(format) }}
         {% else %}
-          {{ value | date('DD MMMM YYYY hh:mmA') }}
+          {{ localDate | date('DD MMMM YYYY, h:mm A') }}
         {% endif %}
       {% else %}
-        <span class="label">Invalid dateeee</span>
+        <p><strong>Raw Date:</strong> [No value found for key {{ component.key }}]</p>
       {% endif %}
     {% endmacro %}    
 
@@ -698,14 +696,13 @@
         <td>&nbsp;</td>
       </tr>
     </table>
-    Debugging data
+    <!-- Debugging data
       {
         "id": "{{ id }}",
         "form": {{ form | dump(2) }},
         "data": {{ data | dump(2) }},
         "components": {{ components | dump(2) }},
         "content": {{ content }}
-      }
-   
+      } -->   
   </body>
 </html>
