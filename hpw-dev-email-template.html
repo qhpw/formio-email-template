@@ -569,7 +569,7 @@
       {% elif not component.enableTime %}
         {{ value | date('D MMMM YYYY') }}
       {% else %}
-        {{ value | date('D MMMM YYYY hh:mmA') }}
+        {{ value | date('D MMMM YYYY hh:mmA').add(10, "hours") }}
       {% endif %}
     {% endmacro %}
     {# Convert date format function
