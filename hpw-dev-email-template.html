@@ -562,14 +562,14 @@
      # Print the datetime value in the appropriate format #}
     {% macro datetimeValue(component, data) %}
       {# Form.io always saves datetime values as UTC, so we need to offset +10hrs (QLD time) #}
-      {% set value = data[component.key] %}
+      {% set value = data[component.key] | date("add", 10, "hours") | date %}
       {% if component.format %}
         {% set format = convertDateFormat(component.format) %}
         {{ value | date(format) }}
       {% elif not component.enableTime %}
         {{ value | date('D MMMM YYYY') }}
       {% else %}
-        {{ value | date('D MMMM YYYY hh:mmA').add(10, "hours") }}
+        {{ value | date('D MMMM YYYY hh:mmA') }}
       {% endif %}
     {% endmacro %}
     {# Convert date format function
