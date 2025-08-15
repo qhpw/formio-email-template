@@ -569,32 +569,24 @@
       {% set original = data[component.key] %}
       {% set date = new Date(original) %}
       {% set newDate = new Date(date.getTime() + (10 * 60 * 60 * 1000)) %}
-      {% set day = newDate.getUTCDate() %}
-      {% set month = newDate.getUTCMonth() + 1 %}
       {% set year = newDate.getUTCFullYear() %}
+      {% set month = newDate.getUTCMonth() + 1 %}
+      {% set day = newDate.getUTCDate() %}
       {% set hours = newDate.getUTCHours() %}
       {% set minutes = newDate.getUTCMinutes() %}
-      {% if day lt 10 %}
-        {% set formattedDay = '0' + day %}
-      {% else %}
-        {% set formattedDay = day %}
-      {% endif %}
       {% if month lt 10 %}
-        {% set formattedMonth = '0' + month %}
-      {% else %}
-        {% set formattedMonth = month %}
+        {% set month = '0' + month %}
+      {% endif %}
+      {% if day lt 10 %}
+        {% set day = '0' + day %}
       {% endif %}
       {% if hours lt 10 %}
-        {% set formattedHours = '0' + hours %}
-      {% else %}
-        {% set formattedHours = hours %}
+        {% set hours = '0' + hours %}
       {% endif %}
       {% if minutes lt 10 %}
-        {% set formattedMinutes = '0' + minutes %}
-      {% else %}
-        {% set formattedMinutes = minutes %}
+        {% set minutes = '0' + minutes %}
       {% endif %}
-      {% set formatted = formattedDay + '/' + formattedMonth + '/' + year + ' - ' + formattedHours + ':' + formattedMinutes %}
+      {% set formatted = year + '-' + month + '-' + day + ' ' + hours + ':' + minutes %}
       <p><strong>formatted: {{ formatted }}</strong>
 
       {% if component.format %}
