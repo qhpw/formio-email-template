@@ -565,7 +565,7 @@
       {% set value = data[component.key] | date("add",10,"hours") %}
 
       <p><strong>format: {{ component.format }} - Data.Key: {{  data[component.key] }} - Value: {{ value }}</strong></p>
-
+      
       {% if component.format %}
         {% set format = convertDateFormat(component.format) %}
         {{ value | date(format) }}
