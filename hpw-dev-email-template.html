@@ -572,16 +572,16 @@
       {% set day = newDate.getUTCDate() %}
       {% set hours = newDate.getUTCHours() %}
       {% set minutes = newDate.getUTCMinutes() %}
-      {% if month &lt; 10 %}
+      {% if month is less than 10 %}
         {% set month = '0' + month %}
       {% endif %}
-      {% if day &lt; 10 %}
+      {% if day is less than 10 %}
         {% set day = '0' + day %}
       {% endif %}
-      {% if hours &lt; 10 %}
+      {% if hours is less than 10 %}
         {% set hours = '0' + hours %}
       {% endif %}
-      {% if minutes &lt; 10 %}
+      {% if minutes is less than 10 %}
         {% set minutes = '0' + minutes %}
       {% endif %}
       {% set formatted = year + '-' + month + '-' + day + ' ' + hours + ':' + minutes %}
