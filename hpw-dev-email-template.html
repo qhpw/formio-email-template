@@ -576,16 +576,16 @@
       {% set hours = newDate.getUTCHours() %}
       {% set minutes = newDate.getUTCMinutes() %}
 
-      {% if month < 10 %}
+      {% if month is less than 10 %}
         {% set month = '0' + month %}
       {% endif %}
-      {% if day < 10 %}
+      {% if day is less than 10 %}
         {% set day = '0' + day %}
       {% endif %}
-      {% if hours < 10 %}
+      {% if hours is less than 10 %}
         {% set hours = '0' + hours %}
       {% endif %}
-      {% if minutes < 10 %}
+      {% if minutes is less than 10 %}
         {% set minutes = '0' + minutes %}
       {% endif %}
 
