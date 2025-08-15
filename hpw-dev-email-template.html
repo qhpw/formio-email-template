@@ -568,24 +568,28 @@
       {% set data1 = data[component.key] | replace("T", " ") %}
       {% set formatted = data1 | replace(":00.000Z", "") %}
       <p><strong>Number: {{ formatted }}</strong></p>
+      {# Step 1: Get the raw ISO string #}
       {% set raw = data.dateField %}
-      {% set dateString = raw | replace("T", " ") | replace(":00.000Z", "") %}
-      {# Extract hour and minute as strings #}
+      {# Step 2: Replace 'T' with space #}
+      {% set step1 = raw | replace("T", " ") %}
+      {# Step 3: Remove ':00.000Z' from the end #}
+      {% set dateString = step1 | replace(":00.000Z", "") %}
+      {# Step 4: Extract hour and minute strings #}
       {% set hourStr = dateString[11] + dateString[12] %}
       {% set minuteStr = dateString[14] + dateString[15] %}
-      {# Convert hour to number and add 10 #}
+      {# Step 5: Convert hour to number and add 10 #}
       {% set hourNum = hourStr | int + 10 %}
-      {# Handle overflow (e.g., 24 becomes 00) #}
+      {# Step 6: Handle overflow (wrap around if >= 24) #}
       {% if hourNum >= 24 %}
         {% set hourNum = hourNum - 24 %}
       {% endif %}
-      {# Pad hour with leading zero if needed #}
+      {# Step 7: Pad hour with leading zero if needed #}
       {% if hourNum < 10 %}
         {% set hourStr = '0' + hourNum %}
       {% else %}
         {% set hourStr = hourNum %}
       {% endif %}
-      {# Build final string #}
+      {# Step 8: Build final output string #}
       {% set final = dateString[0:11] + hourStr + ':' + minuteStr %}
       <p><strong>Final: {{ final }}</strong></p>
       {% if component.format %}
