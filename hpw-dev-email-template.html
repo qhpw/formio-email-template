@@ -565,11 +565,11 @@
       {% set value = data[component.key] %}
       {% if component.format %}
         {% set format = convertDateFormat(component.format) %}
-        {{ value | date(format) }}
+        {{ value | date('add', 10, 'hours') | date(format) }}
       {% elif not component.enableTime %}
-        {{ value | date('D MMMM YYYY') }}
+        {{ value | date('add', 10, 'hours') | date('D MMMM YYYY') }}
       {% else %}
-        {{ value | date('D MMMM YYYY hh:mmA') }}
+        {{ value | date('add', 10, 'hours') | date('D MMMM YYYY hh:mmA') }}
       {% endif %}
     {% endmacro %}
     {# Convert date format function
