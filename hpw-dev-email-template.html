@@ -562,6 +562,7 @@
      # Print the datetime value in the appropriate format #}
     {% macro datetimeValue(component, data) %}
       {# Form.io always saves datetime values as UTC, so we need to offset +10hrs (QLD time) #}
+      <p><strong>format: {{ component.format }} - Key: {{ component.key }} - Data: {{ data }}</strong></p>
       {% set value = data[component.key] | date("add",10,"hours") %}
       {% if component.format %}
         {% set format = convertDateFormat(component.format) %}
@@ -629,20 +630,9 @@
               {{ boxesValueLabel(component, data) }}
               {% endset %}
             {% elif component.type === 'datetime' %}
-              {% if component.format %}
-                {% set format = convertDateFormat(component.format) %}
-                {% set valueOutput %}
-                {{ data[component.key] | date(format) }}
-                {% endset %}
-              {% elif not component.enableTime %}
-                {% set valueOutput %}
-                {{ data[component.key] | date('D MMMM YYYY') }}
-                {% endset %}
-              {% else %}
-                {% set valueOutput %}
-                {{ data[component.key] | date('D MMMM YYYY hh:mmA') }}
-                {% endset %}
-              {% endif %}
+              {% set valueOutput %}
+              {{ datetimeValue(component, data) }}
+              {% endset %}
             {% elif component.type === 'file' %}
               {% set valueOutput %}
               {{ fileValueLabel(data[component.key]) }}
@@ -707,7 +697,7 @@
         "data": {{ data | dump(2) }},
         "components": {{ components | dump(2) }},
         "content": {{ content }}
-      } 
-    -->  
+      }
+    -->
   </body>
 </html>
