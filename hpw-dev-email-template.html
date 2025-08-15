@@ -566,33 +566,6 @@
 
       <p><strong>format: {{ component.format }} - Data.Key: {{  data[component.key] }} - Value: {{ value }}</strong></p>
 
-      {% set original = data[component.key] %}
-      {% set date = new Date(original) %}
-      {% set newDate = new Date(date.getTime() + (10 * 60 * 60 * 1000)) %}
-
-      {% set year = newDate.getUTCFullYear() %}
-      {% set month = newDate.getUTCMonth() + 1 %}
-      {% set day = newDate.getUTCDate() %}
-      {% set hours = newDate.getUTCHours() %}
-      {% set minutes = newDate.getUTCMinutes() %}
-
-      {% if month is less than 10 %}
-        {% set month = '0' + month %}
-      {% endif %}
-      {% if day is less than 10 %}
-        {% set day = '0' + day %}
-      {% endif %}
-      {% if hours is less than 10 %}
-        {% set hours = '0' + hours %}
-      {% endif %}
-      {% if minutes is less than 10 %}
-        {% set minutes = '0' + minutes %}
-      {% endif %}
-
-      {% set formatted = year + '-' + month + '-' + day + ' ' + hours + ':' + minutes %}
-
-      <p><strong>formatted: {{ formatted }}</strong>
-
       {% if component.format %}
         {% set format = convertDateFormat(component.format) %}
         {{ value | date(format) }}
