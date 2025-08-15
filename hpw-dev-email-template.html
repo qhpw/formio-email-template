@@ -568,30 +568,6 @@
       {% set data1 = data[component.key] | replace("T", " ") %}
       {% set formatted = data1 | replace(":00.000Z", "") %}
       <p><strong>Numberrrr: {{ formatted }}</strong></p>
-      {# Step 1: Get the raw datetime string #}
-      {% set raw = data.dateField %}
-      {# Step 2: Replace 'T' with space #}
-      {% set withSpace = raw | replace("T", " ") %}
-      {# Step 3: Remove milliseconds and 'Z' #}
-      {% set trimmed = withSpace | replace(":00.000Z", "") %}
-      {# Step 4: Extract hour and minute manually #}
-      {% set hourStr = trimmed[11] ~ trimmed[12] %}
-      {% set minuteStr = trimmed[14] ~ trimmed[15] %}
-      {# Step 5: Convert hour to integer and add 10 #}
-      {% set hourNum = hourStr | int + 10 %}
-      {# Step 6: Wrap around if hour >= 24 #}
-      {% if hourNum >= 24 %}
-        {% set hourNum = hourNum - 24 %}
-      {% endif %}
-      {# Step 7: Pad hour with leading zero if needed #}
-      {% if hourNum < 10 %}
-        {% set newHourStr = "0" ~ hourNum %}
-      {% else %}
-        {% set newHourStr = hourNum %}
-      {% endif %}
-      {# Step 8: Build final output #}
-      {% set final = trimmed[0:11] ~ newHourStr ~ ":" ~ minuteStr %}
-      <p><strong>Final: {{ final }}</strong></p>
       {% if component.format %}
         {% set format = convertDateFormat(component.format) %}
         {{ value | date(format) }}
