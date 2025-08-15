@@ -563,9 +563,29 @@
     {% macro datetimeValue(component, data) %}
       {# Form.io always saves datetime values as UTC, so we need to offset +10hrs (QLD time) #}
       {% set value = data[component.key] | date("add",10,"hours") %}
-
       <p><strong>format: {{ component.format }} - Data.Key: {{  data[component.key] }} - Value: {{ value }}</strong></p>
-      
+      {% set original = data[component.key] %}
+      {% set date = new Date(original) %}
+      {% set newDate = new Date(date.getTime() + (10 * 60 * 60 * 1000)) %}
+      {% set year = newDate.getUTCFullYear() %}
+      {% set month = newDate.getUTCMonth() + 1 %}
+      {% set day = newDate.getUTCDate() %}
+      {% set hours = newDate.getUTCHours() %}
+      {% set minutes = newDate.getUTCMinutes() %}
+      {% if month < 10 %}
+        {% set month = '0' + month %}
+      {% endif %}
+      {% if day < 10 %}
+        {% set day = '0' + day %}
+      {% endif %}
+      {% if hours < 10 %}
+        {% set hours = '0' + hours %}
+      {% endif %}
+      {% if minutes < 10 %}
+        {% set minutes = '0' + minutes %}
+      {% endif %}
+      {% set formatted = year + '-' + month + '-' + day + ' ' + hours + ':' + minutes %}
+      <p><strong>formatted: {{ formatted }}</strong></p>
       {% if component.format %}
         {% set format = convertDateFormat(component.format) %}
         {{ value | date(format) }}
