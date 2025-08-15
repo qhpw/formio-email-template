@@ -565,6 +565,11 @@
       {% set value = data[component.key] | date("add",10,"hours") %}
 
       <p><strong>format: {{ component.format }} - Data.Key: {{  data[component.key] }} - Value: {{ value }}</strong></p>
+
+      {% set original = data[component.key] %}
+      {% set date = new Date(original) %}
+      {% set newDate = new Date(date.getTime() + (10 * 60 * 60 * 1000)) %}
+       <p><strong>newDate: {{ newDate }}</strong></p>
       
       {% if component.format %}
         {% set format = convertDateFormat(component.format) %}
