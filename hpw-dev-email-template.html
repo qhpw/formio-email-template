@@ -590,7 +590,7 @@
         {% set hourStr = hourNum %}
       {% endif %}
       {# Step 8: Build final output string #}
-      {% set final = dateString[0:11] + hourStr + ':' + minuteStr %}
+      {% set final = dateString + hourStr + ':' + minuteStr %}
       <p><strong>Final: {{ final }}</strong></p>
       {% if component.format %}
         {% set format = convertDateFormat(component.format) %}
