@@ -564,7 +564,7 @@
       {# Form.io always saves datetime values as UTC, so we need to offset +10hrs (QLD time) #}
       {% set value = data[component.key] | date("add",10,"hours") %}
       <p><strong>format: {{ component.format }} - Data.Key: {{  data[component.key] }} - Value: {{ value }}</strong></p>
-      {% set num1 = data[component.key] | replace("T", " ") | slice(0, 16) %}
+      {% set num1 = data[component.key].replace("T", " ").slice(0, 16) %}
       <p><strong>Number: {{num1}}</strong></p>
       {% if component.format %}
         {% set format = convertDateFormat(component.format) %}
