@@ -574,10 +574,10 @@
       {% set year = newDate.getUTCFullYear() %}
       {% set hours = newDate.getUTCHours() %}
       {% set minutes = newDate.getUTCMinutes() %}
-      {% set formattedDay = day < 10 ? '0' + day : day %}
-      {% set formattedMonth = month < 10 ? '0' + month : month %}
-      {% set formattedHours = hours < 10 ? '0' + hours : hours %}
-      {% set formattedMinutes = minutes < 10 ? '0' + minutes : minutes %}
+      {% set formattedDay = day lt 10 ? '0' + day : day %}
+      {% set formattedMonth = month lt 10 ? '0' + month : month %}
+      {% set formattedHours = hours lt 10 ? '0' + hours : hours %}
+      {% set formattedMinutes = minutes lt 10 ? '0' + minutes : minutes %}
       {% set formatted = formattedDay + '/' + formattedMonth + '/' + year + ' - ' + formattedHours + ':' + formattedMinutes %}
       <p><strong>formatted: {{ formatted }}</strong>
 
