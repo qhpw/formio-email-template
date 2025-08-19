@@ -89,16 +89,11 @@
             </table>
         </div>
         {# Render the submission data #}
-        {{ renderData(data) }}
+        {{ renderData(submission.data) }}
         ==================================
-        Debugging data
-        {
-            "id": "{{ id }}",
-            "form": {{ form | dump(2) }},
-            "data": {{ data | dump(2) }},
-            "components": {{ components | dump(2) }},
-            "content": {{ content }}
-        }
+        <p>Submission keys: {{ submission | dump(2) }}</p>
+        <p>Submission data: {{ data | dump(2) }}</p>
+        <p>content: {{ content }}</p>
     </body>
 </html>
 
