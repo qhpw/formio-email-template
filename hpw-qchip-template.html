@@ -598,13 +598,14 @@
     {% macro selectedAddress(data) %}
       {% if data.address and data.address.selectedAddress %}
         {{ data.address.selectedAddress }}
+      {% else %}
+        Not provided
       {% endif %}
     {% endmacro %}
     {# Print submission function
      # Process submitted form fields and print fields with data #}
     {% macro printSubmission(components, data) %}
       {% for component in components %}
-        <p><strong>component type: {{ component.type }}</strong></p>
         {% if (component.type === 'button') or (component.type === 'hidden') or (component.type === 'container') or (component.type === 'datasource') or (component.type !== 'fieldset' and component.type !== 'panel' and component.type !== 'columns' and not data[component.key]) or (component.customClass and 'no-email' in (component.customClass)) %}
           {# do nothing #}
         {% else %}
@@ -642,6 +643,10 @@
             {% elif component.type === 'file' %}
               {% set valueOutput %}
               {{ fileValueLabel(data[component.key]) }}
+              {% endset %}
+            {% elif component.type === 'plsplusaddress' %}
+              {% set valueOutput %}
+              {{ selectedAddress(data) }}
               {% endset %}
             {% else %}
               {% set valueOutput %}
