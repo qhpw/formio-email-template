@@ -90,6 +90,15 @@
         </div>
         {# Render the submission data #}
         {{ renderData(data) }}
+        ==================================
+        Debugging data
+        {
+            "id": "{{ id }}",
+            "form": {{ form | dump(2) }},
+            "data": {{ data | dump(2) }},
+            "components": {{ components | dump(2) }},
+            "content": {{ content }}
+        }
     </body>
 </html>
 
