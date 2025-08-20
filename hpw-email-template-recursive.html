@@ -26,22 +26,28 @@
         </style>
     </head>
     <body>    
-        {# Builds a dynamic label map from form components #}
-        <!-- {% set labelMap = {} %}
-        {% for component in form.components %}
-            {% if component.key and component.label %}
-                {% set labelMap = labelMap | merge({ (component.key): component.label }) %}
-            {% endif %}
-        {% endfor %} -->
-
-        {# Recursive macro to render data #}
-        {# 🧾 Render the submission data using dynamic labels #}
-        {% macro renderData(data) %}
-        <table class="submission-table">
+        <h2>📩 New Form Submission</h2>
+        <table style="border-collapse: collapse; width: 100%;">
+        <thead>
+            <tr>
+            <th style="border: 1px solid #ccc; padding: 8px; background-color: #f2f2f2;">Field</th>
+            <th style="border: 1px solid #ccc; padding: 8px; background-color: #f2f2f2;">Value</th>
+            </tr>
+        </thead>
+        <tbody>
             {% for key, value in data %}
             <tr>
-                <!-- <td class="label-cell"><strong>{{ labelMap[key] or key }}</strong></td> -->
-                <td class="value-cell">
+                <td style="border: 1px solid #ccc; padding: 8px;">
+                {# 🔍 Find label from form.components #}
+                {% set label = '' %}
+                {% for comp in form.components %}
+                    {% if comp.key == key %}
+                    {% set label = comp.label %}
+                    {% endif %}
+                {% endfor %}
+                {{ label or key }}
+                </td>
+                <td style="border: 1px solid #ccc; padding: 8px;">
                 {% if value is iterable and value is not string %}
                     {% if value is array %}
                     <ul>
@@ -50,7 +56,7 @@
                         {% endfor %}
                     </ul>
                     {% else %}
-                    {{ renderData(value) }}
+                    {{ value | dump }}
                     {% endif %}
                 {% else %}
                     {{ value }}
@@ -58,33 +64,8 @@
                 </td>
             </tr>
             {% endfor %}
+        </tbody>
         </table>
-        {% endmacro %}
-        {# Render the submission data #}
-        {% if data %}
-            {{ renderData(data) }}
-        {% else %}
-            <p>No submission data available.</p>
-        {% endif %}
-        <div class="footer">
-            <table role="presentation" border="0" cellpadding="0" cellspacing="0">
-                <tr>
-                <td class="content-block">
-                    <span class="apple-link">© The State of Queensland (Department of Housing and Public Works) {{ created | date("YYYY") }}</span>
-                </td>
-                </tr>                
-                <tr>
-                <td class="content-block powered-by">
-                    <img src="https://www.forgov.qld.gov.au/__data/assets/image/0022/201694/qld-coat-of-arms.png" width="150"/>
-                </td>
-                </tr>
-            </table>
-        </div>
-        ==================================
-        <p>Submission keys: {{ submission | dump(2) }}</p>
-        <p>Submission data: {{ data | dump(2) }}</p>
-        <p>content: {{ content }}</p>
-        <p>form: {{ form }}</p>
     </body>
 </html>
 
