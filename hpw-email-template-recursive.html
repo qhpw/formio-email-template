@@ -26,54 +26,46 @@
         </style>
     </head>
     <body>    
-        {# Field label lookup dictionary #}
-        {% set labels = {
-                "firstName": "First Name",
-                "lastName": "Last Name",
-                "email": "Email Address",
-                "dob": "Date of Birth",
-                "comments": "Additional Comments"
-            } 
-        %}
-        {# Fields to exclude #}
-        {% set excludeFields = ["password", "internalNotes"] %}
+        {# Builds a dynamic label map from form components #}
+        {% set labelMap = {} %}
+        {% for component in components %}
+            {% if component.key and component.label %}
+                {% set labelMap = labelMap | merge({ (component.key): component.label }) %}
+            {% endif %}
+        {% endfor %}
+
         {# Recursive macro to render data #}
+        {# 🧾 Render the submission data using dynamic labels #}
         {% macro renderData(data) %}
-            <table class="submission-table">
-                {% for key, value in data %}
-                {% if key not in excludeFields %}
-                    <tr>
-                        <td class="label-cell"><strong>{{ labels[key] or key }}</strong></td>
-                        <td class="value-cell">
-                            {% if value is iterable and value is not string %}
-                            {% if value is array %}
-                                <ul>
-                                    {% for item in value %}
-                                        <li>
-                                        {% if item is iterable and item is not string %}
-                                            {{ renderData(item) }}
-                                        {% else %}
-                                            {{ item }}
-                                        {% endif %}
-                                        </li>
-                                    {% endfor %}
-                                </ul>
-                            {% else %}
-                                {{ renderData(value) }}
-                            {% endif %}
-                            {% else %}
-                            {% if key == "dob" %}
-                                {{ value | date("MMMM D, YYYY") }}
-                            {% else %}
-                                {{ value }}
-                            {% endif %}
-                            {% endif %}
-                        </td>
-                    </tr>
+        <table class="submission-table">
+            {% for key, value in data %}
+            <tr>
+                <td class="label-cell"><strong>{{ labelMap[key] or key }}</strong></td>
+                <td class="value-cell">
+                {% if value is iterable and value is not string %}
+                    {% if value is array %}
+                    <ul>
+                        {% for item in value %}
+                        <li>{{ item }}</li>
+                        {% endfor %}
+                    </ul>
+                    {% else %}
+                    {{ renderData(value) }}
+                    {% endif %}
+                {% else %}
+                    {{ value }}
                 {% endif %}
-                {% endfor %}
-            </table>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
         {% endmacro %}
+        {# Render the submission data #}
+        {% if data %}
+            {{ renderData(data) }}
+        {% else %}
+            <p>No submission data available.</p>
+        {% endif %}
         <div class="footer">
             <table role="presentation" border="0" cellpadding="0" cellspacing="0">
                 <tr>
@@ -88,12 +80,11 @@
                 </tr>
             </table>
         </div>
-        {# Render the submission data #}
-        {{ renderData(submission.data) }}
         ==================================
         <p>Submission keys: {{ submission | dump(2) }}</p>
         <p>Submission data: {{ data | dump(2) }}</p>
         <p>content: {{ content }}</p>
+        <p>components: {{ components }}</p>
     </body>
 </html>
 
