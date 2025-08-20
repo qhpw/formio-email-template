@@ -28,7 +28,7 @@
     <body>    
         {# Builds a dynamic label map from form components #}
         {% set labelMap = {} %}
-        {% for component in components %}
+        {% for component in form.components %}
             {% if component.key and component.label %}
                 {% set labelMap = labelMap | merge({ (component.key): component.label }) %}
             {% endif %}
@@ -84,7 +84,7 @@
         <p>Submission keys: {{ submission | dump(2) }}</p>
         <p>Submission data: {{ data | dump(2) }}</p>
         <p>content: {{ content }}</p>
-        <p>components: {{ components }}</p>
+        <p>components: {{ form.components }}</p>
     </body>
 </html>
 
