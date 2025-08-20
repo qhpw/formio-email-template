@@ -1,98 +1,87 @@
-{# -------------------- MACROS -------------------- #}
+{# Field label lookup dictionary #}
+{% set labels = {
+  "firstName": "First Name",
+  "lastName": "Last Name",
+  "email": "Email Address",
+  "dob": "Date of Birth",
+  "comments": "Additional Comments"
+} %}
 
-{% macro getComponentLabel(component) %}
-  {% if component.label %}
-    {{ component.label | striptags }}
-  {% elif component.title %}
-    {{ component.title | striptags }}
-  {% elif component.legend %}
-    {{ component.legend | striptags }}
-  {% else %}
-    {{ component.key }}
-  {% endif %}
-{% endmacro %}
+{# Fields to exclude #}
+{% set excludeFields = ["password", "internalNotes"] %}
 
-{% macro getComponentValue(component, data) %}
-  {% set value = data[component.key] %}
-  {% if component.type === 'select' %}
-    {{ selectedValueLabel(component, data) }}
-  {% elif component.type === 'radio' %}
-    {{ radioValueLabel(component, data) }}
-  {% elif component.type === 'selectboxes' %}
-    {{ boxesValueLabel(component, data) }}
-  {% elif component.type === 'datetime' %}
-    {{ datetimeValue(component, data) }}
-  {% elif component.type === 'file' %}
-    {{ fileValueLabel(value) }}
-  {% elif component.multiple and value %}
-    {{ value | join(', ') }}
-  {% else %}
-    {{ value }}
-  {% endif %}
-{% endmacro %}
-
-{% macro printSubmission(components, data) %}
-  {% for component in components %}
-    {% if (
-      component.type in ['button', 'hidden', 'container', 'datasource']
-      or (component.customClass and 'no-email' in component.customClass)
-      or (component.type !== 'fieldset' and component.type !== 'panel' and component.type !== 'columns' and not data[component.key])
-    ) %}
-      {# Skip irrelevant components #}
-    {% else %}
-      {% if component.type === 'fieldset' or component.type === 'panel' %}
-        <h3>{{ getComponentLabel(component) }}</h3>
-        {{ printSubmission(component.components, data) }}
-      {% elif component.type === 'columns' %}
-        {% for column in component.columns %}
-          {{ printSubmission(column.components, data) }}
-        {% endfor %}
-      {% elif component.type === 'datagrid' %}
-        <h3>{{ getComponentLabel(component) }}</h3>
-        {{ datagridData(component, data) }}
-      {% elif component.type === 'editgrid' %}
-        <h3>{{ getComponentLabel(component) }}</h3>
-        {{ editgridData(component, data) }}
-      {% else %}
-        {% set label = getComponentLabel(component) %}
-        {% set value = getComponentValue(component, data) %}
-        {% if value %}
-          <p><span class="label">{{ label }}: </span>{{ value | trim }}</p>
-        {% endif %}
+{# Recursive macro to render data #}
+{% macro renderData(data) %}
+  <table class="submission-table">
+    {% for key, value in data %}
+      {% if key not in excludeFields %}
+        <tr>
+          <td class="label-cell"><strong>{{ labels[key] or key }}</strong></td>
+          <td class="value-cell">
+            {% if value is iterable and value is not string %}
+              {% if value is array %}
+                <ul>
+                  {% for item in value %}
+                    <li>
+                      {% if item is iterable and item is not string %}
+                        {{ renderData(item) }}
+                      {% else %}
+                        {{ item }}
+                      {% endif %}
+                    </li>
+                  {% endfor %}
+                </ul>
+              {% else %}
+                {{ renderData(value) }}
+              {% endif %}
+            {% else %}
+              {% if key == "dob" %}
+                {{ value | date("MMMM D, YYYY") }}
+              {% else %}
+                {{ value }}
+              {% endif %}
+            {% endif %}
+          </td>
+        </tr>
       {% endif %}
-    {% endif %}
-  {% endfor %}
-{% endmacro %}
-
-{# -------------------- OUTPUT -------------------- #}
-
-<h2>📩 New Submission Received</h2>
-
-{{ printSubmission(form.components, data) }}
-
-<div class="footer">
-  <table role="presentation" border="0" cellpadding="0" cellspacing="0">
-    <tr>
-      <td class="content-block">
-        <span class="apple-link">© The State of Queensland (Department of Housing and Public Works) {{ created | date("YYYY") }}</span>
-      </td>
-    </tr>                
-    <tr>
-      <td class="content-block powered-by">
-        <img src="https://www.forgov.qld.gov.au/__data/assets/image/0022/201694/qld-coat-of-arms.png" width="150"/>
-      </td>
-    </tr>
+    {% endfor %}
   </table>
-</div>
+{% endmacro %}
+	<div class="footer">
+	  <table role="presentation" border="0" cellpadding="0" cellspacing="0">
+		<tr>
+		  <td class="content-block">
+			<span class="apple-link">© The State of Queensland (Department of Housing and Public Works) {{ created | date("YYYY") }}</span>
+		  </td>
+		</tr>                
+		<tr>
+		  <td class="content-block powered-by">
+			<img src="https://www.forgov.qld.gov.au/__data/assets/image/0022/201694/qld-coat-of-arms.png" width="150"/>
+		  </td>
+		</tr>
+	  </table>
+	</div>
+
+{# Render the submission data #}
+{{ renderData(submission.data) }}
 
 <style>
-  .label {
-    font-weight: bold;
-    color: #333;
-  }
-  h3 {
-    margin-top: 20px;
+  .submission-table {
+    border-collapse: collapse;
+    width: 100%;
     font-family: Arial, sans-serif;
-    color: #444;
+  }
+  .submission-table td {
+    border: 1px solid #ccc;
+    padding: 8px;
+    vertical-align: top;
+  }
+  .label-cell {
+    background-color: #f9f9f9;
+    font-weight: bold;
+    width: 30%;
+  }
+  .value-cell {
+    width: 70%;
   }
 </style>
