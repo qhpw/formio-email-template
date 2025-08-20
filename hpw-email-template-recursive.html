@@ -1,71 +1,98 @@
-<!doctype html>
-<html>
-    <head>
-        <meta name="viewport" content="width=device-width"/>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-        <title>Form Submission</title>
-        <style>
-            .submission-table {
-                border-collapse: collapse;
-                width: 100%;
-                font-family: Arial, sans-serif;
-            }
-            .submission-table td {
-                border: 1px solid #ccc;
-                padding: 8px;
-                vertical-align: top;
-            }
-            .label-cell {
-                background-color: #f9f9f9;
-                font-weight: bold;
-                width: 30%;
-            }
-            .value-cell {
-                width: 70%;
-            }
-        </style>
-    </head>
-    <body>    
-        <h2>📩 New Form Submission</h2>
-        <table style="border-collapse: collapse; width: 100%;">
-        <thead>
-            <tr>
-            <th style="border: 1px solid #ccc; padding: 8px; background-color: #f2f2f2;">Field</th>
-            <th style="border: 1px solid #ccc; padding: 8px; background-color: #f2f2f2;">Value</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for key, value in data %}
-            <tr>
-                <td style="border: 1px solid #ccc; padding: 8px;">
-                {# 🔍 Find label from form.components #}
-                {% set label = '' %}
-                {% for comp in form.components %}
-                    {% if comp.key == key %}
-                    {% set label = comp.label %}
-                    {% endif %}
-                {% endfor %}
-                {{ label or key }}
-                </td>
-                <td style="border: 1px solid #ccc; padding: 8px;">
-                {% if value is iterable and value is not string %}
-                    {% if value is array %}
-                    <ul>
-                        {% for item in value %}
-                        <li>{{ item }}</li>
-                        {% endfor %}
-                    </ul>
-                    {% else %}
-                    {{ value | dump }}
-                    {% endif %}
-                {% else %}
-                    {{ value }}
-                {% endif %}
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-        </table>
-    </body>
-</html>
+{# -------------------- MACROS -------------------- #}
 
+{% macro getComponentLabel(component) %}
+  {% if component.label %}
+    {{ component.label | striptags }}
+  {% elif component.title %}
+    {{ component.title | striptags }}
+  {% elif component.legend %}
+    {{ component.legend | striptags }}
+  {% else %}
+    {{ component.key }}
+  {% endif %}
+{% endmacro %}
+
+{% macro getComponentValue(component, data) %}
+  {% set value = data[component.key] %}
+  {% if component.type === 'select' %}
+    {{ selectedValueLabel(component, data) }}
+  {% elif component.type === 'radio' %}
+    {{ radioValueLabel(component, data) }}
+  {% elif component.type === 'selectboxes' %}
+    {{ boxesValueLabel(component, data) }}
+  {% elif component.type === 'datetime' %}
+    {{ datetimeValue(component, data) }}
+  {% elif component.type === 'file' %}
+    {{ fileValueLabel(value) }}
+  {% elif component.multiple and value %}
+    {{ value | join(', ') }}
+  {% else %}
+    {{ value }}
+  {% endif %}
+{% endmacro %}
+
+{% macro printSubmission(components, data) %}
+  {% for component in components %}
+    {% if (
+      component.type in ['button', 'hidden', 'container', 'datasource']
+      or (component.customClass and 'no-email' in component.customClass)
+      or (component.type !== 'fieldset' and component.type !== 'panel' and component.type !== 'columns' and not data[component.key])
+    ) %}
+      {# Skip irrelevant components #}
+    {% else %}
+      {% if component.type === 'fieldset' or component.type === 'panel' %}
+        <h3>{{ getComponentLabel(component) }}</h3>
+        {{ printSubmission(component.components, data) }}
+      {% elif component.type === 'columns' %}
+        {% for column in component.columns %}
+          {{ printSubmission(column.components, data) }}
+        {% endfor %}
+      {% elif component.type === 'datagrid' %}
+        <h3>{{ getComponentLabel(component) }}</h3>
+        {{ datagridData(component, data) }}
+      {% elif component.type === 'editgrid' %}
+        <h3>{{ getComponentLabel(component) }}</h3>
+        {{ editgridData(component, data) }}
+      {% else %}
+        {% set label = getComponentLabel(component) %}
+        {% set value = getComponentValue(component, data) %}
+        {% if value %}
+          <p><span class="label">{{ label }}: </span>{{ value | trim }}</p>
+        {% endif %}
+      {% endif %}
+    {% endif %}
+  {% endfor %}
+{% endmacro %}
+
+{# -------------------- OUTPUT -------------------- #}
+
+<h2>📩 New Submission Received</h2>
+
+{{ printSubmission(form.components, data) }}
+
+<div class="footer">
+  <table role="presentation" border="0" cellpadding="0" cellspacing="0">
+    <tr>
+      <td class="content-block">
+        <span class="apple-link">© The State of Queensland (Department of Housing and Public Works) {{ created | date("YYYY") }}</span>
+      </td>
+    </tr>                
+    <tr>
+      <td class="content-block powered-by">
+        <img src="https://www.forgov.qld.gov.au/__data/assets/image/0022/201694/qld-coat-of-arms.png" width="150"/>
+      </td>
+    </tr>
+  </table>
+</div>
+
+<style>
+  .label {
+    font-weight: bold;
+    color: #333;
+  }
+  h3 {
+    margin-top: 20px;
+    font-family: Arial, sans-serif;
+    color: #444;
+  }
+</style>
