@@ -27,12 +27,12 @@
     </head>
     <body>    
         {# Builds a dynamic label map from form components #}
-        {% set labelMap = {} %}
+        <!-- {% set labelMap = {} %}
         {% for component in form.components %}
             {% if component.key and component.label %}
                 {% set labelMap = labelMap | merge({ (component.key): component.label }) %}
             {% endif %}
-        {% endfor %}
+        {% endfor %} -->
 
         {# Recursive macro to render data #}
         {# 🧾 Render the submission data using dynamic labels #}
@@ -40,7 +40,7 @@
         <table class="submission-table">
             {% for key, value in data %}
             <tr>
-                <td class="label-cell"><strong>{{ labelMap[key] or key }}</strong></td>
+                <!-- <td class="label-cell"><strong>{{ labelMap[key] or key }}</strong></td> -->
                 <td class="value-cell">
                 {% if value is iterable and value is not string %}
                     {% if value is array %}
@@ -84,7 +84,7 @@
         <p>Submission keys: {{ submission | dump(2) }}</p>
         <p>Submission data: {{ data | dump(2) }}</p>
         <p>content: {{ content }}</p>
-        <p>components: {{ form.components }}</p>
+        <p>form: {{ form }}</p>
     </body>
 </html>
 
