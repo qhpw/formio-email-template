@@ -623,6 +623,7 @@
             {{ editgridLabel(component, data) }}
             {{ editgridData(component, data) }}
           {% else %}
+            {{ component.type }}
             {% set valueOutput = '' %}
             {% if component.type === 'select' %}
               {% set valueOutput %}
