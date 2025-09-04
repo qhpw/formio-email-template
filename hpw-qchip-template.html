@@ -646,7 +646,7 @@
               {% endset %}
             {% elif component.type === 'plsplusaddress' %}
               {% set valueOutput %}
-              {{ selectedAddress(data) }}
+              {{ component.type }}
               {% endset %}
             {% else %}
               {% set valueOutput %}
