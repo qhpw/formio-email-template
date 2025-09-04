@@ -596,8 +596,8 @@
     {% endmacro %}
     {# extracts the selectedAddress from the data address object #}
     {% macro selectedAddress(data) %}
-      {% if data.address and data.address.selectedAddress %}
-        {{ data.address.selectedAddress }}
+      {% if data.addressData1 and data.addressData1.selectedAddress %}
+        {{ data.addressData1.selectedAddress }}
       {% else %}
         Not provided
       {% endif %}
@@ -606,7 +606,7 @@
      # Process submitted form fields and print fields with data #}
     {% macro printSubmission(components, data) %}
       {% for component in components %}
-        {% if (component.type === 'button') or (component.type === 'hidden') or (component.type === 'container') or (component.type === 'datasource') or (component.type !== 'fieldset' and component.type !== 'panel' and component.type !== 'columns' and not data[component.key]) or (component.customClass and 'no-email' in (component.customClass)) %}
+        {% if (component.type === 'button') or (component.type === 'hidden') or (component.type === 'container') or (component.type === 'datasource') or (component.type !== 'fieldset' and component.type !== 'panel' and component.type !== 'columns' and component.type !== 'plsplusaddress' and not data[component.key]) or (component.customClass and 'no-email' in (component.customClass)) %}
           {# do nothing #}
         {% else %}
           {% if component.type === 'fieldset' or component.type === 'panel' %}
