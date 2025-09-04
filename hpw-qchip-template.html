@@ -596,8 +596,8 @@
     {% endmacro %}
     {# extracts the selectedAddress from the data address object #}
     {% macro selectedAddress(data) %}
-      {% if data.address and data.address.selectedAddress %}
-        {{ data.address.selectedAddress }}
+      {% if data.addressData1 and data.addressData1.selectedAddress %}
+        {{ data.addressData1.selectedAddress }}
       {% else %}
         Not provided
       {% endif %}
