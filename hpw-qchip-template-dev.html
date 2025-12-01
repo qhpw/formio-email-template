@@ -579,8 +579,13 @@
       {% for c in initialFormat %}{{ c if not regex.test(c) else c | upper }}{% endfor %}
     {% endmacro %}
     {# Include the GST #}
-    {% macro includeGST(data) %}
-      {{ data }} <span>include GST</span>
+    {% macro includeGST(data, label) %}
+      {% if label === 'totalDevelopmentCosts' %}
+        {% set hiddenLabel = label ~ 'Hidden' %}
+        {{ data[hiddenLabel] }} <span>include GST</span>
+      {% else %}
+        {{ data[label] }} <span>include GST</span>
+      {% endif %}
     {% endmacro %}
     {# extracts and displays the uploaded file name out of file object #}
     {% macro fileValueLabel(data) %}
@@ -654,7 +659,7 @@
               {% endset %}
             {% elif component.prefix === '$' %}
               {% set valueOutput %}
-              {{ includeGST(data) }}
+              {{ includeGST(data, component.key]) }}
               {% endset %}
             {% else %}
               {% set valueOutput %}
