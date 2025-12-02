@@ -658,7 +658,7 @@
               {% endset %}
             {% elif component.prefix === '$' %}
               {% set valueOutput %}
-              {{ includeGST(data, component.key]) }}
+              {{ includeGST(data, component.key) }}
               {% endset %}
             {% else %}
               {% set valueOutput %}
