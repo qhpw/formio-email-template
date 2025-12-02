@@ -581,7 +581,7 @@
     {# Include the GST #}
     {% macro includeGST(data, label) %}
       {% if label === 'totalDevelopmentCosts' %}
-        {{ data['totalDevelopmentCostsHidden'] }} <span>include GST</span>
+        {{ value('totalDevelopmentCostsHidden') }} <span>include GST</span>
       {% else %}
         {{ data[label] }} <span>include GST</span>
       {% endif %}
