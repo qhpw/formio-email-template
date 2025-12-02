@@ -580,11 +580,7 @@
     {% endmacro %}
     {# Include the GST #}
     {% macro includeGST(data, label) %}
-      {% if label === 'totalDevelopmentCosts' %}
-        {{ value('totalDevelopmentCostsHidden') }} <span>include GST</span>
-      {% else %}
-        {{ data[label] }} <span>include GST</span>
-      {% endif %}
+      ${{ data[label ~ 'Hidden'] }} <span>(include GST)</span>
     {% endmacro %}
     {# extracts and displays the uploaded file name out of file object #}
     {% macro fileValueLabel(data) %}
