@@ -578,6 +578,10 @@
       {% set regex = r/([dy])/ %}
       {% for c in initialFormat %}{{ c if not regex.test(c) else c | upper }}{% endfor %}
     {% endmacro %}
+    {# Include the GST #}
+    {% macro includeGST(data, label) %}
+      ${{ data[label ~ 'Hidden'] }} <span>(include GST)</span>
+    {% endmacro %}
     {# extracts and displays the uploaded file name out of file object #}
     {% macro fileValueLabel(data) %}
       {% set valueOutput = '' %}
@@ -647,6 +651,10 @@
             {% elif component.type === 'plsplusaddress' %}
               {% set valueOutput %}
               {{ selectedAddress(data) }}
+              {% endset %}
+            {% elif component.prefix === '$' %}
+              {% set valueOutput %}
+              {{ includeGST(data, component.key) }}
               {% endset %}
             {% else %}
               {% set valueOutput %}
